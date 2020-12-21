@@ -31,17 +31,8 @@ func Insert(w http.ResponseWriter, r *http.Request) {
 		price := r.FormValue("price")
 		quantity := r.FormValue("quantity")
 
-		priceToFloat, err := strconv.ParseFloat(price, 64)
-
-		if err != nil {
-			log.Println("Error while converting price to float:", err)
-		}
-
-		quantityToInt, err := strconv.Atoi(quantity)
-
-		if err != nil {
-			log.Println("Error while converting quantity to integer:", err)
-		}
+		priceToFloat := convertToFloat("price", price)
+		quantityToInt := convertToInt("quantity", quantity)
 
 		models.CreateProduct(name, description, priceToFloat, quantityToInt)
 	}
@@ -49,4 +40,60 @@ func Insert(w http.ResponseWriter, r *http.Request) {
 	code := 301
 
 	http.Redirect(w, r, "/", code)
+}
+
+// Delete receives the ID of the product to delete, calls the model's method and redirects
+func Delete(w http.ResponseWriter, r *http.Request) {
+	productID := r.URL.Query().Get("id")
+	models.RemoveProduct(productID)
+
+	http.Redirect(w, r, "/", 301)
+}
+
+// Edit receives the ID of the product to update, and applies info into the edit page
+func Edit(w http.ResponseWriter, r *http.Request) {
+	productID := r.URL.Query().Get("id")
+
+	product := models.QueryProduct(productID)
+
+	tmpl.ExecuteTemplate(w, "edit", product)
+}
+
+// Update receives the ID of the product to update, calls the model's method and redirects
+func Update(w http.ResponseWriter, r *http.Request) {
+	if r.Method == "POST" {
+		id := r.FormValue("id")
+		name := r.FormValue("name")
+		description := r.FormValue("description")
+		price := r.FormValue("price")
+		quantity := r.FormValue("quantity")
+
+		idToInt := convertToInt("id", id)
+		priceToFloat := convertToFloat("price", price)
+		quantityToInt := convertToInt("quantity", quantity)
+
+		models.UpdateProduct(idToInt, name, description, priceToFloat, quantityToInt)
+	}
+
+	http.Redirect(w, r, "/", 301)
+}
+
+func convertToFloat(field string, value string) float64 {
+	valueToFloat, err := strconv.ParseFloat(value, 64)
+
+	if err != nil {
+		log.Println("Error while converting", field, "to float:", err)
+	}
+
+	return valueToFloat
+}
+
+func convertToInt(field string, value string) int {
+	valueToInt, err := strconv.Atoi(value)
+
+	if err != nil {
+		log.Println("Error while converting", field, "to integer:", err)
+	}
+
+	return valueToInt
 }

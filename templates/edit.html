@@ -1,4 +1,4 @@
-{{define "create"}}
+{{define "edit"}}
 
 {{template "_head"}}
 
@@ -9,16 +9,17 @@
     <body>
         <div class="jumbotron jumbotron-fluid">
             <div class="container">
-                <h1 class="display-5">New product</h1>
-                <p class="lead">Input the details</p>
+                <h1 class="display-5">Edit product</h1>
+                <p class="lead">Input the new details</p>
             </div>
         </div>
-        <form method="POST" action="insert">
+        <form method="POST" action="update">
+            <input type="hidden" name="id" id={{.ID}} value={{.ID}}>
             <div class="row">
                 <div class="col-sm-8">
                     <div class="form-group">
                         <label for="name">Name:</label>
-                        <input type="text" name="name" class="form-control">
+                        <input type="text" name="name" value={{.Name}} class="form-control">
                     </div>
                 </div>
             </div>
@@ -26,7 +27,7 @@
                 <div class="col-sm-8">
                     <div class="form-group">
                         <label for="description">Description:</label>
-                        <input type="text" name="description" class="form-control">
+                        <input type="text" name="description" value={{.Description}} class="form-control">
                     </div>
                 </div>
             </div>
@@ -34,7 +35,7 @@
                 <div class="col-sm-2">
                     <div class="form-group">
                         <label for="price">Price:</label>
-                        <input type="number" name="price" class="form-control" step="0.01">
+                        <input type="number" name="price" value={{.Price}} class="form-control" step="0.01">
                     </div>
                 </div>
             </div>
@@ -43,11 +44,11 @@
                 <div class="col-sm-2">
                     <div class="form-group">
                         <label for="quantity">Quantity:</label>
-                        <input type="number" name="quantity" class="form-control">
+                        <input type="number" name="quantity" value={{.Quantity}} class="form-control">
                     </div>
                 </div>
             </div>
-            <button type="submit" value="save" class="btn btn-success">Save</button>
+            <button type="submit" value="save" class="btn btn-success">Update</button>
             <a class="btn btn-info" href="/">Exit</a>
         </form>
     </body>
